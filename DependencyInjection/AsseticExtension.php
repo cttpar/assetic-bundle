@@ -103,7 +103,7 @@ class AsseticExtension extends Extension
                 foreach ($filter['apply_to'] as $i => $pattern) {
                     $defitionClassname = $this->getDefinitionClassname();
                     
-                    $worker = new defitionClassname('assetic.worker.ensure_filter');
+                    $worker = new $defitionClassname('assetic.worker.ensure_filter');
                     $worker->replaceArgument(0, '/'.$pattern.'/');
                     $worker->replaceArgument(1, new Reference('assetic.filter.'.$name));
                     $worker->addTag('assetic.factory_worker');
