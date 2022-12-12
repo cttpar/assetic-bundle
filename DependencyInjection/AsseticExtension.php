@@ -14,6 +14,7 @@ namespace Symfony\Bundle\AsseticBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -100,7 +101,9 @@ class AsseticExtension extends Extension
                 }
 
                 foreach ($filter['apply_to'] as $i => $pattern) {
-                    $worker = new DefinitionDecorator('assetic.worker.ensure_filter');
+                    $defitionClassname = $this->getDefinitionClassname();
+                    
+                    $worker = new defitionClassname('assetic.worker.ensure_filter');
                     $worker->replaceArgument(0, '/'.$pattern.'/');
                     $worker->replaceArgument(1, new Reference('assetic.filter.'.$name));
                     $worker->addTag('assetic.factory_worker');
@@ -157,4 +160,10 @@ class AsseticExtension extends Extension
 
         return new Configuration(array_keys($bundles));
     }
+    
+    private function getDefinitionClassname(): string
+    {
+        return class_exists(ChildDefinition::class) ? ChildDefinition::class : DefinitionDecorator::class;
+    }
+    
 }
